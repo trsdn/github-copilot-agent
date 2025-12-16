@@ -85,6 +85,31 @@ Frontmatter guidelines:
 - Avoid destructive terminal commands; if terminal is required, explain why and keep commands narrowly scoped.
 - Keep tool sets under control; there are practical limits on how many tools can be enabled at once.
 
+## Subagents and handoffs (important)
+
+### Context-isolated subagents (VS Code)
+
+VS Code supports **context-isolated subagents** via the `runSubagent` tool. To use subagents reliably:
+
+- Ensure `runSubagent` is enabled (either via the tools picker, or via `tools: [...]` in the agent/prompt frontmatter).
+- If you want a subagent to run as a *specific custom agent*, enable the experimental setting `chat.customAgentInSubagent.enabled`.
+- A custom agent can be blocked from subagent usage by setting `infer: false` in its `*.agent.md` frontmatter.
+
+### Handoffs (VS Code)
+
+VS Code custom agents support a `handoffs:` frontmatter property to guide users through a multi-step workflow (for example: Plan → Implement → Review).
+
+### Cross-environment note (VS Code vs GitHub Copilot)
+
+Some frontmatter fields have different behavior depending on where the agent runs.
+
+- `infer`:
+   - In **VS Code**, `infer` controls whether the agent can be used as a subagent (defaults to `true`).
+   - In **GitHub Copilot coding agent**, `infer: false` disables automatic agent selection (the agent must be chosen manually).
+- `handoffs`:
+   - Supported in **VS Code**.
+   - Currently **ignored** by **GitHub Copilot coding agent** for compatibility.
+
 ## Reference docs
 
 - VS Code Copilot overview: https://code.visualstudio.com/docs/copilot/overview
@@ -104,9 +129,11 @@ Frontmatter guidelines:
 - Context engineering guide: https://code.visualstudio.com/docs/copilot/guides/context-engineering-guide
 - Prompt engineering guide: https://code.visualstudio.com/docs/copilot/guides/prompt-engineering-guide
 - Security considerations (VS Code): https://code.visualstudio.com/docs/copilot/security
+- Subagents / chat sessions (VS Code): https://code.visualstudio.com/docs/copilot/chat/chat-sessions
 
 GitHub Copilot (cloud) custom agents:
 - Creating custom agents (GitHub docs): https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-custom-agents
+- Custom agents configuration (GitHub reference): https://docs.github.com/en/copilot/reference/custom-agents-configuration
 
 ## Deliverables style
 
