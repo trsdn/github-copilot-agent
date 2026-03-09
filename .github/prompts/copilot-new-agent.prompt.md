@@ -62,6 +62,14 @@ When done, list the created file path and how to select the agent in the VS Code
 
 > **Deprecated:** `infer` is deprecated. Use `user-invocable` and `disable-model-invocation` instead.
 
+## Claude agent format (alternative)
+
+VS Code also supports the Claude agent format in `.claude/agents/`:
+- Uses plain `.md` files (not `.agent.md`)
+- `tools` is a comma-separated string (e.g., `"Read, Grep, Glob, Bash"`) instead of YAML array
+- Supports `disallowedTools` as comma-separated string
+- VS Code maps Claude tool names to corresponding VS Code tools
+
 ## Reference docs
 
 - Custom agents (VS Code): https://code.visualstudio.com/docs/copilot/customization/custom-agents

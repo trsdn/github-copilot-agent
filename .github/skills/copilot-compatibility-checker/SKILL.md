@@ -115,8 +115,17 @@ When diagnosing issues, consult these sources for the latest information:
 
 | Feature | Setting | Since Version | Status |
 |---------|---------|---------------|--------|
-| Agent plugins | N/A | Preview | **Preview** |
-| Plugin marketplaces | N/A | Preview | **Preview** |
+| Agent plugins | `chat.plugins.enabled` | Preview | **Preview** |
+| Plugin marketplaces | `chat.plugins.marketplaces` | Preview | **Preview** |
+| Local plugins | `chat.plugins.paths` | Preview | **Preview** |
+
+### CLAUDE.md / Claude Compatibility
+
+| Feature | Setting | Since Version | Status |
+|---------|---------|---------------|--------|
+| `CLAUDE.md` instructions | `chat.useClaudeMdFile` | Stable | Stable |
+| `.claude/agents/` format | Auto-discovered | Stable | Stable |
+| `.claude/rules/` instructions | `chat.instructionsFilesLocations` | Stable | Stable |
 
 ### Prompt Files
 
@@ -130,8 +139,12 @@ When diagnosing issues, consult these sources for the latest information:
 | Feature | Setting | Since Version | Status |
 |---------|---------|---------------|--------|
 | Terminal tool auto-approval | `chat.tools.autoApprove` | 1.103 | Stable |
+| Terminal sandboxing | `chat.tools.terminal.sandbox.enabled` | Preview | **Preview** |
 | MCP servers | `chat.mcp.enabled` | 1.102 | Stable |
+| MCP sandbox | `sandboxEnabled` in `mcp.json` | Preview | **Preview** |
+| MCP auto-discovery | `chat.mcp.discovery.enabled` | Preview | **Preview** |
 | Background agents | `chat.agent.background.enabled` | 1.107 | **Experimental** |
+| Autopilot mode | `chat.autopilot.enabled` | Preview | **Preview** |
 
 ## Diagnostic Steps
 
@@ -226,6 +239,9 @@ Enable all experimental features:
   "chat.mcp.enabled": true,
   "chat.useCustomAgentHooks": true,
   "chat.useClaudeMdFile": true,
+  "chat.plugins.enabled": true,
+  "chat.autopilot.enabled": true,
+  "chat.mcp.discovery.enabled": true,
   "github.copilot.chat.customAgents.showOrganizationAndEnterpriseAgents": true
 }
 ```

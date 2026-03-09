@@ -59,6 +59,7 @@ Check for correct directory structure:
 | `.github/copilot-instructions.md` | Workspace-wide coding guidelines | **High** |
 | `.github/instructions/*.instructions.md` | File-type specific rules | Medium |
 | `AGENTS.md` (root) | Multi-agent workspace instructions | Optional |
+| `CLAUDE.md` (root, `.claude/`, `~/.claude/`) | Cross-tool compatibility | Optional |
 
 #### Instruction Quality Checks
 
@@ -84,8 +85,8 @@ Check for correct directory structure:
 
 #### Agent File Checks
 
-- [ ] All agents have `.agent.md` extension
-- [ ] Agents are in `.github/agents/` directory
+- [ ] All agents have `.agent.md` extension (or `.md` in `.claude/agents/`)
+- [ ] Agents are in `.github/agents/` directory (or `.claude/agents/` for Claude format)
 - [ ] YAML frontmatter is valid
 - [ ] `description` is present and descriptive
 - [ ] `name` is set (recommended)
@@ -217,7 +218,10 @@ Check for recommended settings:
   "chat.useNestedAgentsMdFiles": true,
   "chat.customAgentInSubagent.enabled": true,
   "chat.useCustomAgentHooks": true,
-  "chat.useClaudeMdFile": true
+  "chat.useClaudeMdFile": true,
+  "chat.plugins.enabled": true,
+  "chat.autopilot.enabled": true,
+  "chat.mcp.discovery.enabled": true
 }
 ```
 
