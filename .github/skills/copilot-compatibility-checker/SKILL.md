@@ -38,6 +38,8 @@ When diagnosing issues, consult these sources for the latest information:
 - [Custom Agents](https://code.visualstudio.com/docs/copilot/customization/custom-agents)
 - [Prompt Files](https://code.visualstudio.com/docs/copilot/customization/prompt-files)
 - [Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
+- [Hooks](https://code.visualstudio.com/docs/copilot/customization/hooks)
+- [Agent Plugins](https://code.visualstudio.com/docs/copilot/customization/agent-plugins)
 - [MCP Servers](https://code.visualstudio.com/docs/copilot/customization/mcp-servers)
 - [Language Models](https://code.visualstudio.com/docs/copilot/customization/language-models)
 
@@ -95,10 +97,26 @@ When diagnosing issues, consult these sources for the latest information:
 
 | Feature | Setting | Since Version | Status |
 |---------|---------|---------------|--------|
-| Agent Skills | `chat.useAgentSkills` | 1.108 | **Preview** |
-| Project skills (`.github/skills/`) | `chat.useAgentSkills` | 1.108 | **Preview** |
-| Personal skills (`~/.copilot/skills/`) | `chat.useAgentSkills` | 1.108 | **Preview** |
-| Legacy skill locations (`.claude/skills/`) | `chat.useAgentSkills` | 1.108 | **Preview** |
+| Agent Skills | `chat.useAgentSkills` | 1.108 | Stable |
+| Project skills (`.github/skills/`) | `chat.useAgentSkills` | 1.108 | Stable |
+| Personal skills (`~/.copilot/skills/`) | `chat.useAgentSkills` | 1.108 | Stable |
+| Alt skill locations (`.claude/skills/`, `.agents/skills/`) | `chat.useAgentSkills` | 1.108 | Stable |
+| Custom skill locations | `chat.agentSkillsLocations` | 1.108 | Stable |
+
+### Hooks (Lifecycle Automation)
+
+| Feature | Setting | Since Version | Status |
+|---------|---------|---------------|--------|
+| Workspace hooks (`.github/hooks/`) | `chat.hookFilesLocations` | Preview | **Preview** |
+| Agent-scoped hooks (frontmatter) | `chat.useCustomAgentHooks` | Preview | **Preview** |
+| Claude-compatible hooks (`.claude/settings.json`) | `chat.hookFilesLocations` | Preview | **Preview** |
+
+### Agent Plugins
+
+| Feature | Setting | Since Version | Status |
+|---------|---------|---------------|--------|
+| Agent plugins | N/A | Preview | **Preview** |
+| Plugin marketplaces | N/A | Preview | **Preview** |
 
 ### Prompt Files
 
@@ -149,7 +167,9 @@ Check if the required files exist in the correct locations:
 | Custom agents | `.github/agents/*.agent.md` |
 | Prompt files | `.github/prompts/*.prompt.md` |
 | Agent Skills | `.github/skills/*/SKILL.md` |
+| Hook configs | `.github/hooks/*.json` |
 | AGENTS.md | Root or subfolders |
+| CLAUDE.md | Root, `.claude/`, or `~/.claude/` |
 
 ## Common Issues
 
@@ -182,8 +202,15 @@ Check if the required files exist in the correct locations:
 ### "Subagent can't use my custom agent"
 
 1. Enable `chat.customAgentInSubagent.enabled` (experimental)
-2. Verify the custom agent has `infer: true` (or omitted, as true is default)
+2. Verify the custom agent does not have `disable-model-invocation: true`
 3. Ensure `runSubagent` tool is available
+
+### "Hooks aren't running"
+
+1. Verify hook configuration file is valid JSON in `.github/hooks/`
+2. For agent-scoped hooks, enable `chat.useCustomAgentHooks`
+3. Check that hook scripts exist and are executable
+4. Verify the hook event name matches a valid lifecycle event
 
 ## Settings Quick Reference
 
@@ -197,6 +224,8 @@ Enable all experimental features:
   "chat.useAgentSkills": true,
   "chat.customAgentInSubagent.enabled": true,
   "chat.mcp.enabled": true,
+  "chat.useCustomAgentHooks": true,
+  "chat.useClaudeMdFile": true,
   "github.copilot.chat.customAgents.showOrganizationAndEnterpriseAgents": true
 }
 ```
@@ -205,7 +234,8 @@ Enable all experimental features:
 
 | Version | Key Features Added |
 |---------|-------------------|
-| 1.108 | Agent Skills (preview) |
+| Preview | Hooks (lifecycle automation), Agent plugins |
+| 1.108 | Agent Skills |
 | 1.107 | Background agents (experimental), org/enterprise agents |
 | 1.106 | Custom agents (renamed from chat modes) |
 | 1.105 | Nested AGENTS.md (experimental) |

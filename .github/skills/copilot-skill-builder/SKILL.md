@@ -22,8 +22,10 @@ Agent Skills are folders containing a `SKILL.md` file plus optional scripts, exa
 |------|----------|----------|
 | Project skills | `.github/skills/<skill-name>/` | Shared with the repository |
 | Personal skills | `~/.copilot/skills/<skill-name>/` | Private to your machine |
-| Legacy project | `.claude/skills/<skill-name>/` | Backward compatibility |
-| Legacy personal | `~/.claude/skills/<skill-name>/` | Backward compatibility |
+| Alt project | `.claude/skills/<skill-name>/` | Cross-tool compatibility |
+| Alt project | `.agents/skills/<skill-name>/` | Cross-tool compatibility |
+| Alt personal | `~/.claude/skills/<skill-name>/` | Cross-tool compatibility |
+| Alt personal | `~/.agents/skills/<skill-name>/` | Cross-tool compatibility |
 
 ## SKILL.md file format
 
@@ -44,8 +46,11 @@ Detailed instructions, guidelines, and examples...
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `name` | Yes | Unique identifier. Lowercase, hyphens for spaces, max 64 chars (e.g., `webapp-testing`) |
+| `name` | Yes | Unique identifier. Lowercase, hyphens for spaces, max 64 chars. Must match parent directory name |
 | `description` | Yes | What the skill does and when to use it. Be specific to help Copilot decide when to load. Max 1024 chars |
+| `argument-hint` | No | Hint text shown in chat input when invoked as a slash command |
+| `user-invocable` | No | Controls `/` slash command visibility (default: `true`). Set to `false` for background skills |
+| `disable-model-invocation` | No | Controls auto-loading by Copilot (default: `false`). Set to `true` for manual-only skills |
 
 ### Body content
 

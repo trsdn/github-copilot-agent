@@ -4,7 +4,10 @@
   "files.associations": {
     "*.agent.md": "markdown",
     "*.prompt.md": "markdown",
-    "SKILL.md": "markdown"
+    "*.instructions.md": "markdown",
+    "SKILL.md": "markdown",
+    "AGENTS.md": "markdown",
+    "CLAUDE.md": "markdown"
   },
   "files.exclude": {
     "**/.git": true,
@@ -29,6 +32,10 @@
   },
   "github.copilot.editor.enableAutoCompletions": true,
   "github.copilot.chat.organizationCustomAgents.enabled": true,
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "chat.useAgentsMdFile": true,
+  "chat.useAgentSkills": true,
+  "chat.mcp.enabled": true,
   "chat.experimental.agentTools.enabled": true,
   "search.exclude": {
     "**/node_modules": true,

@@ -24,6 +24,9 @@ Create a new Agent Skill in this repository.
 3. In YAML frontmatter:
    - Set `name` to `${input:skillName}` (lowercase, hyphens, max 64 chars)
    - Set `description` to `${input:skillDescription}` (max 1024 chars, be specific about capabilities and use cases)
+   - Optionally set `argument-hint` for hint text when invoked as a slash command
+   - Optionally set `user-invocable: false` to hide from `/` menu (still auto-loaded by Copilot)
+   - Optionally set `disable-model-invocation: true` to require manual invocation only
 4. In the Markdown body, include:
    - What the skill accomplishes
    - When to use it (specific triggers)

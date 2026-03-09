@@ -5,17 +5,19 @@ These instructions are automatically applied to every Copilot Chat session in th
 ## Project Context
 
 This is a **GitHub Copilot Customization Blueprint** — a template repository for bootstrapping
-Copilot agents, prompt files, instructions, and skills in any project.
+Copilot agents, prompt files, instructions, skills, and hooks in any project.
 
 ## Conventions
 
-- All customization files live under `.github/` (agents, prompts, skills, instructions)
+- All customization files live under `.github/` (agents, prompts, skills, instructions, hooks)
 - Use **Conventional Commits** for all commit messages: `<type>(<scope>): <description>`
 - Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
-- Agent files: `.agent.md` with YAML frontmatter (`name`, `description`, `tools` required)
-- Prompt files: `.prompt.md` with YAML frontmatter (`name`, `description` required)
+- Agent files: `.agent.md` with YAML frontmatter (`description` required, `name` and `tools` recommended)
+- Prompt files: `.prompt.md` with YAML frontmatter (`description` recommended)
 - Skill files: `SKILL.md` in a named directory under `.github/skills/<name>/`
-- Use `user-invokable` and `disable-model-invocation` instead of the deprecated `infer` field
+- Hook configs: JSON files in `.github/hooks/` defining lifecycle automation
+- Use `user-invocable` and `disable-model-invocation` instead of the deprecated `infer` field
+- For cross-tool compatibility, also support `CLAUDE.md` and `.claude/` locations
 
 ## File Structure
 
@@ -23,7 +25,9 @@ Copilot agents, prompt files, instructions, and skills in any project.
 .github/
 ├── agents/           # Custom agent profiles (.agent.md)
 ├── prompts/          # Prompt templates (.prompt.md)
+├── instructions/     # Scoped instruction files (*.instructions.md)
 ├── skills/           # Agent Skills (each in its own directory with SKILL.md)
+├── hooks/            # Hook configuration files (*.json)
 ├── workflows/        # GitHub Actions (release, validate, commit-lint)
 └── copilot-instructions.md  # This file
 ```

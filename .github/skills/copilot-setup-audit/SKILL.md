@@ -31,6 +31,8 @@ Check for correct directory structure:
 │   └── *.instructions.md
 ├── skills/                    # Agent skills
 │   └── */SKILL.md
+├── hooks/                     # Hook configurations
+│   └── *.json
 ├── copilot-instructions.md    # Workspace-wide instructions
 └── (optional) AGENTS.md       # Alternative: root-level agent instructions
 .vscode/
@@ -89,6 +91,7 @@ Check for correct directory structure:
 - [ ] `name` is set (recommended)
 - [ ] `tools` list is explicit (avoid giving all tools)
 - [ ] No deprecated `.chatmode.md` files exist
+- [ ] Uses `user-invocable` / `disable-model-invocation` instead of deprecated `infer`
 
 #### Recommended Agents
 
@@ -107,7 +110,9 @@ Consider creating agents for these common workflows:
 - [ ] Agents have clear, focused purposes
 - [ ] Tool lists are minimal and intentional
 - [ ] Handoffs defined for workflow agents
-- [ ] `infer: false` set for agents that shouldn't be used as subagents
+- [ ] `user-invocable: false` set for subagent-only agents
+- [ ] `disable-model-invocation: true` set for agents that shouldn't be auto-invoked
+- [ ] `model` specified where appropriate (can be array for fallback)
 
 ### 4. Prompt Files
 
@@ -144,6 +149,7 @@ Consider creating prompts for repetitive tasks:
 - [ ] YAML frontmatter has `name` and `description`
 - [ ] Description is specific (helps Copilot decide when to load)
 - [ ] Supporting files are referenced with relative paths
+- [ ] `user-invocable` / `disable-model-invocation` configured appropriately
 
 #### Recommended Skills
 
@@ -157,7 +163,37 @@ Consider creating skills for:
 | Troubleshooting | Common issues and solutions |
 | Testing strategies | Project-specific test patterns |
 
-### 6. Settings Configuration
+### 6. Hooks (Lifecycle Automation)
+
+#### Hook File Checks
+
+- [ ] Hook configs are valid JSON in `.github/hooks/` directory
+- [ ] Each hook entry has `type: "command"` and a `command` field
+- [ ] Hook scripts exist and are executable
+- [ ] Timeouts are set appropriately (default: 30s)
+- [ ] `Stop` hooks check `stop_hook_active` to prevent infinite loops
+- [ ] Agent-scoped hooks use `chat.useCustomAgentHooks` setting
+
+#### Recommended Hooks
+
+| Hook Event | Purpose | Example |
+|------------|---------|---------|
+| `PreToolUse` | Block dangerous commands | Security policy enforcement |
+| `PostToolUse` | Auto-format after edits | Run Prettier/ESLint after file changes |
+| `SessionStart` | Inject project context | Add environment info to session |
+| `Stop` | Enforce quality gates | Require test runs before finishing |
+
+#### Hook configuration locations
+
+| Location | Scope |
+|----------|-------|
+| `.github/hooks/*.json` | Workspace (shared with team) |
+| `.claude/settings.json` | Workspace (Claude compatibility) |
+| `.claude/settings.local.json` | Local only (not committed) |
+| `~/.claude/settings.json` | User (all workspaces) |
+| Agent frontmatter `hooks:` | Agent-scoped (preview) |
+
+### 7. Settings Configuration
 
 #### Workspace Settings (.vscode/settings.json)
 
@@ -171,15 +207,17 @@ Check for recommended settings:
   // Enable AGENTS.md support
   "chat.useAgentsMdFile": true,
   
-  // Enable Agent Skills (preview)
+  // Enable Agent Skills
   "chat.useAgentSkills": true,
   
   // Enable MCP servers
   "chat.mcp.enabled": true,
   
-  // Optional experimental features
+  // Optional experimental/preview features
   "chat.useNestedAgentsMdFiles": true,
-  "chat.customAgentInSubagent.enabled": true
+  "chat.customAgentInSubagent.enabled": true,
+  "chat.useCustomAgentHooks": true,
+  "chat.useClaudeMdFile": true
 }
 ```
 
@@ -190,7 +228,7 @@ Check for recommended settings:
 - [ ] No conflicting or deprecated settings
 - [ ] Settings committed to repo (shared with team)
 
-### 7. Legacy/Deprecated Patterns
+### 8. Legacy/Deprecated Patterns
 
 #### Files to migrate or remove
 
@@ -208,7 +246,7 @@ Check for recommended settings:
 | `github.copilot.chat.codeGeneration.instructions` | `.github/copilot-instructions.md` |
 | `github.copilot.chat.testGeneration.instructions` | `*.instructions.md` with `applyTo` |
 
-### 8. Security & Best Practices
+### 9. Security & Best Practices
 
 #### Security Checks
 
@@ -216,6 +254,8 @@ Check for recommended settings:
 - [ ] Terminal commands in prompts are safe and scoped
 - [ ] MCP server configurations are reviewed
 - [ ] Shared skills are audited before use
+- [ ] Hook scripts are reviewed for security implications
+- [ ] Agent plugins are audited before installation
 
 #### Version Control
 
@@ -241,6 +281,7 @@ Check for recommended settings:
 | Custom Agents | ✅/⚠️/❌ | X/Y |
 | Prompt Files | ✅/⚠️/❌ | X/Y |
 | Agent Skills | ✅/⚠️/❌ | X/Y |
+| Hooks | ✅/⚠️/❌ | X/Y |
 | Settings | ✅/⚠️/❌ | X/Y |
 | Legacy Patterns | ✅/⚠️/❌ | X/Y |
 | Security | ✅/⚠️/❌ | X/Y |
@@ -280,4 +321,6 @@ Check for recommended settings:
 - [Custom Agents](https://code.visualstudio.com/docs/copilot/customization/custom-agents)
 - [Prompt Files](https://code.visualstudio.com/docs/copilot/customization/prompt-files)
 - [Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
+- [Hooks](https://code.visualstudio.com/docs/copilot/customization/hooks)
+- [Agent Plugins](https://code.visualstudio.com/docs/copilot/customization/agent-plugins)
 - [Awesome Copilot](https://github.com/github/awesome-copilot)

@@ -1,6 +1,9 @@
 ---
 name: {{skill-name}}
 description: {{skill-description}}
+# argument-hint: {{optional hint text for slash command}}
+# user-invocable: true
+# disable-model-invocation: false
 ---
 
 # {{Skill Title}}

@@ -17,6 +17,7 @@ It gives you a small set of reusable prompt templates and a purpose-built custom
 - **Custom agents** (`.agent.md`) for VS Code and/or GitHub Copilot
 - **Scoped instruction files** (`*.instructions.md`) that apply to a file glob
 - **Agent Skills** (`.github/skills/<name>/SKILL.md`) for portable, specialized capabilities
+- **Hooks** (`.github/hooks/*.json`) for lifecycle automation
 
 The intent is to keep everything **in-repo**, versioned, reviewable, and easy to reuse across projects.
 
@@ -55,7 +56,7 @@ The intent is to keep everything **in-repo**, versioned, reviewable, and easy to
 
 Before using this blueprint, ensure you have:
 
-- **Visual Studio Code** (version 1.85.0 or later)
+- **Visual Studio Code** (version 1.95.0 or later, 1.108+ recommended for all features)
 - **GitHub Copilot** subscription (Personal, Business, or Enterprise)
 - **GitHub Copilot Chat** extension installed
 - Git installed and configured
@@ -123,7 +124,7 @@ See [Keeping your repositories in sync](#keeping-your-repositories-in-sync) for 
 
 - `.github/agents/copilot-customization-builder.agent.md`
   - Agent name: **Copilot Customization Builder**
-  - Purpose: create and maintain Copilot customization artifacts (agents, prompt files, instructions, skills, MCP guidance)
+  - Purpose: create and maintain Copilot customization artifacts (agents, prompt files, instructions, skills, hooks, MCP guidance)
 
 ### Prompt templates (invoked via `/...`)
 
@@ -135,6 +136,8 @@ See [Keeping your repositories in sync](#keeping-your-repositories-in-sync) for 
   - Creates a new scoped instructions file in `.github/instructions/<slug>.instructions.md`
 - `.github/prompts/copilot-new-skill.prompt.md`
   - Creates a new Agent Skill in `.github/skills/<name>/SKILL.md`
+- `.github/prompts/copilot-new-hook.prompt.md`
+  - Creates a new hook configuration in `.github/hooks/<name>.json`
 
 ### Agent Skills
 
@@ -146,7 +149,10 @@ See [Keeping your repositories in sync](#keeping-your-repositories-in-sync) for 
   - Check required settings, version requirements, and troubleshoot issues
 - `.github/skills/copilot-setup-audit/SKILL.md`
   - Audit repository Copilot setup and suggest improvements
-  - Comprehensive checklists for agents, prompts, instructions, skills, settings
+  - Comprehensive checklists for agents, prompts, instructions, skills, hooks, settings
+- `.github/skills/copilot-customization-selector/SKILL.md`
+  - Help decide which customization type to use
+  - Decision matrix comparing instructions, prompts, agents, skills, hooks, and plugins
 
 ## Quickstart: use Copilot to generate Copilot customizations
 
@@ -158,6 +164,7 @@ See [Keeping your repositories in sync](#keeping-your-repositories-in-sync) for 
    - `/copilot-new-agent`
    - `/copilot-new-instructions`
    - `/copilot-new-skill`
+   - `/copilot-new-hook` - create a hook configuration
    - `/copilot-check-compatibility` - diagnose feature issues
    - `/copilot-audit-setup` - audit repo setup and get recommendations
 
@@ -176,6 +183,7 @@ Copilot Chat will ask you for the required `${input:...}` values (slug, display 
 - Prompt files: `.github/prompts/<slug>.prompt.md`
 - Scoped instructions: `.github/instructions/<slug>.instructions.md` (YAML frontmatter includes `applyTo: '<glob>'`)
 - Agent Skills: `.github/skills/<name>/SKILL.md` (plus optional scripts/examples in the skill directory)
+- Hook configs: `.github/hooks/<name>.json` (lifecycle automation)
 
 If you also want **workspace-wide** instructions, add:
 
@@ -186,6 +194,10 @@ If you also want **workspace-wide** instructions, add:
 For **multi-agent** workspaces, consider:
 
 - `AGENTS.md` at the workspace root (enable with `chat.useAgentsMdFile` setting)
+
+For **cross-tool compatibility** with Claude Code:
+
+- `CLAUDE.md` at the workspace root (enable with `chat.useClaudeMdFile` setting)
 
 ## Keeping your repositories in sync
 
@@ -245,6 +257,7 @@ These templates intentionally encourage:
 - **Minimal tool access** (explicit `tools: [...]` instead of “everything”)
 - **Incremental changes** (small diffs; validate formats and paths)
 - **Safe-by-default behavior** (be careful with terminal commands; treat web content/tool output as untrusted)
+- **Lifecycle automation** (use hooks for security enforcement, formatting, and audit logging)
 
 ## Contributing
 

@@ -31,22 +31,28 @@ What do you want to achieve?
 ├─► Build portable capabilities with scripts/resources?
 │   └─► Use AGENT SKILLS (SKILL.md)
 │
-└─► Connect external services or APIs?
-    └─► Use MCP SERVERS (mcp.json)
+├─► Automate actions at agent lifecycle points?
+│   └─► Use HOOKS (.github/hooks/*.json)
+│
+├─► Connect external services or APIs?
+│   └─► Use MCP SERVERS (mcp.json)
+│
+└─► Install pre-packaged customizations?
+    └─► Use AGENT PLUGINS (preview)
 ```
 
 ## Decision Matrix
 
-| Feature | Instructions | Prompt Files | Custom Agents | Agent Skills |
-|---------|--------------|--------------|---------------|--------------|
-| **File Extension** | `.instructions.md` | `.prompt.md` | `.agent.md` | `SKILL.md` |
-| **Location** | `.github/instructions/` | `.github/prompts/` | `.github/agents/` | `.github/skills/<name>/` |
-| **Triggers** | Auto (always or via glob) | Manual (`/name`) | Manual (switch agent) | Auto (when relevant) |
-| **Can include scripts?** | ❌ No | ❌ No | ❌ No | ✅ Yes |
-| **Can specify tools?** | ❌ No | ✅ Yes | ✅ Yes | ❌ No |
-| **Can specify model?** | ❌ No | ✅ Yes | ✅ Yes | ❌ No |
-| **Portable across tools?** | ❌ VS Code only | ❌ VS Code only | ❌ VS Code only | ✅ Open standard |
-| **Status** | Stable | Stable | Stable (1.106+) | Preview (1.108+) |
+| Feature | Instructions | Prompt Files | Custom Agents | Agent Skills | Hooks |
+|---------|--------------|--------------|---------------|--------------|-------|
+| **File Extension** | `.instructions.md` | `.prompt.md` | `.agent.md` | `SKILL.md` | `.json` |
+| **Location** | `.github/instructions/` | `.github/prompts/` | `.github/agents/` | `.github/skills/<name>/` | `.github/hooks/` |
+| **Triggers** | Auto (always or via glob) | Manual (`/name`) | Manual (switch agent) | Auto (when relevant) | Lifecycle events |
+| **Can include scripts?** | ❌ No | ❌ No | ❌ No | ✅ Yes | ✅ Yes |
+| **Can specify tools?** | ❌ No | ✅ Yes | ✅ Yes | ❌ No | N/A |
+| **Can specify model?** | ❌ No | ✅ Yes | ✅ Yes | ❌ No | N/A |
+| **Portable across tools?** | ❌ VS Code only | ❌ VS Code only | Partial | ✅ Open standard | Partial |
+| **Status** | Stable | Stable | Stable (1.106+) | Stable | Preview |
 
 ## Detailed Guidance
 
@@ -117,8 +123,10 @@ What do you want to achieve?
 
 - Define `tools` list to control what the agent can do
 - Use `handoffs` for guided multi-step workflows
-- Specify `model` for optimal performance per task
-- Set `infer: false` to prevent use as subagent
+- Specify `model` for optimal performance per task (single string or prioritized array)
+- Set `user-invocable: false` for subagent-only agents
+- Set `disable-model-invocation: true` to prevent automatic invocation
+- Define agent-scoped `hooks` for lifecycle automation (preview)
 
 **Example agents:**
 
@@ -155,12 +163,57 @@ What do you want to achieve?
 
 ---
 
+### Use Hooks when
+
+**Perfect for:**
+
+- Enforcing security policies (block dangerous commands before execution)
+- Automating code quality (run formatters/linters after edits)
+- Creating audit trails (log all tool invocations)
+- Injecting project context into sessions
+- Controlling tool approvals programmatically
+
+**Key features:**
+
+- Eight lifecycle events: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PreCompact`, `SubagentStart`, `SubagentStop`, `Stop`
+- JSON-based configuration in `.github/hooks/*.json`
+- Can also be scoped to individual agents via frontmatter
+- Deterministic execution (runs regardless of prompt)
+- Hooks can block, allow, or require approval for tool execution
+
+**Example hooks:**
+
+- Block `rm -rf` and `DROP TABLE` commands
+- Auto-format with Prettier after every file edit
+- Log every tool invocation for compliance
+- Inject environment info at session start
+
+---
+
+### Use Agent Plugins when (Preview)
+
+**Perfect for:**
+
+- Installing pre-packaged customization bundles from marketplaces
+- Sharing complete workflows (agents + skills + prompts + hooks) as a single package
+- Discovering community-contributed customizations
+- Extending Copilot without manual file management
+
+**Key features:**
+
+- Bundles of slash commands, skills, agents, hooks, and MCP servers
+- Discoverable via plugin marketplaces
+- Installed plugins appear alongside local customizations
+- Can add private repositories as custom marketplaces
+
+---
+
 ## How They Work Together
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     CUSTOM AGENT                            │
-│  (defines persona, tools, model)                            │
+│  (defines persona, tools, model, hooks)                     │
 │    ├── Can reference: Custom Instructions                   │
 │    └── Can be triggered by: Prompt Files (via agent field)  │
 ├─────────────────────────────────────────────────────────────┤
@@ -175,6 +228,10 @@ What do you want to achieve?
 │                     AGENT SKILLS                            │
 │  (portable capabilities, auto-loaded when relevant)         │
 │    └── Works independently, loaded based on task context    │
+├─────────────────────────────────────────────────────────────┤
+│                        HOOKS                                │
+│  (deterministic lifecycle automation)                       │
+│    └── Runs at lifecycle events, enforces policies          │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -195,12 +252,15 @@ What do you want to achieve?
 │   ├── planner.agent.md         # Read-only planning agent
 │   ├── reviewer.agent.md        # Code review agent
 │   └── implementer.agent.md     # Full coding agent
-└── skills/
-    ├── webapp-testing/
-    │   ├── SKILL.md
-    │   └── test-template.js
-    └── debugging/
-        └── SKILL.md
+├── skills/
+│   ├── webapp-testing/
+│   │   ├── SKILL.md
+│   │   └── test-template.js
+│   └── debugging/
+│       └── SKILL.md
+└── hooks/
+    ├── security.json            # Block dangerous commands
+    └── formatting.json          # Auto-format after edits
 ```
 
 ## Common Combinations
@@ -233,7 +293,9 @@ What do you want to achieve?
 | `AGENTS.md` | 1.102 | `chat.useAgentsMdFile` |
 | Custom agents (`.agent.md`) | 1.106 | Auto-discovered |
 | Nested `AGENTS.md` | 1.105 | `chat.useNestedAgentsMdFiles` (experimental) |
-| Agent Skills | 1.108 | `chat.useAgentSkills` (preview) |
+| Agent Skills | 1.108 | `chat.useAgentSkills` |
+| Hooks | Preview | `chat.useCustomAgentHooks` (for agent-scoped) |
+| Agent plugins | Preview | N/A |
 
 ## References
 
@@ -242,5 +304,7 @@ What do you want to achieve?
 - [Prompt Files](https://code.visualstudio.com/docs/copilot/customization/prompt-files)
 - [Custom Agents](https://code.visualstudio.com/docs/copilot/customization/custom-agents)
 - [Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
+- [Hooks](https://code.visualstudio.com/docs/copilot/customization/hooks)
+- [Agent Plugins](https://code.visualstudio.com/docs/copilot/customization/agent-plugins)
 - [Agent Skills Standard](https://agentskills.io/)
 - [Community Examples](https://github.com/github/awesome-copilot)
