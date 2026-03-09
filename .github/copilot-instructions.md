@@ -17,7 +17,6 @@ Copilot agents, prompt files, instructions, skills, and hooks in any project.
 - Skill files: `SKILL.md` in a named directory under `.github/skills/<name>/`
 - Hook configs: JSON files in `.github/hooks/` defining lifecycle automation
 - Use `user-invocable` and `disable-model-invocation` instead of the deprecated `infer` field
-- For cross-tool compatibility, also support `CLAUDE.md` and `.claude/` locations
 
 ## File Structure
 

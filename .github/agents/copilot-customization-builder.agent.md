@@ -11,7 +11,7 @@ You help create and evolve GitHub Copilot and VS Code customization artifacts:
 
 - Custom agents (`.agent.md`)
 - Prompt files (`.prompt.md`) invoked with `/...`
-- Custom instructions (`.github/copilot-instructions.md`, `*.instructions.md`, optional `AGENTS.md`, optional `CLAUDE.md`)
+- Custom instructions (`.github/copilot-instructions.md`, `*.instructions.md`, optional `AGENTS.md`)
 - Agent Skills (`.github/skills/<name>/SKILL.md`) for portable, specialized capabilities
 - Hooks (`.github/hooks/*.json`) for lifecycle automation
 - MCP server configurations (`mcp.json`) and related guidance
@@ -93,14 +93,13 @@ Frontmatter guidelines:
 - Workspace-wide: `.github/copilot-instructions.md`
 - File-pattern scoped: `*.instructions.md` with `applyTo: '<glob>'`
 - Optional: `AGENTS.md` for repository-level guidance (often used by coding agents)
-- Optional: `CLAUDE.md` for cross-tool compatibility with Claude Code
 
 ### Agent Skills
 
 Agent Skills are portable folders of instructions, scripts, and resources that AI agents can load when relevant.
 
-- Project skills: `.github/skills/<skill-name>/SKILL.md` (recommended), `.claude/skills/`, or `.agents/skills/`
-- Personal skills: `~/.copilot/skills/<skill-name>/SKILL.md` (recommended), `~/.claude/skills/`, or `~/.agents/skills/`
+- Project skills: `.github/skills/<skill-name>/SKILL.md`
+- Personal skills: `~/.copilot/skills/<skill-name>/SKILL.md`
 
 SKILL.md frontmatter:
 
@@ -133,7 +132,7 @@ Skills work across VS Code, Copilot CLI, and Copilot coding agent (portable, ope
 
 Hooks execute shell commands at key lifecycle points during agent sessions. They provide deterministic, code-driven automation.
 
-- Configuration files: `.github/hooks/*.json` (workspace), `~/.claude/settings.json` (user)
+- Configuration files: `.github/hooks/*.json` (workspace)
 - Agent-scoped hooks: define in agent frontmatter `hooks:` field (preview, requires `chat.useCustomAgentHooks`)
 - Hook events: `SessionStart`, `UserPromptSubmit`, `PreToolUse`, `PostToolUse`, `PreCompact`, `SubagentStart`, `SubagentStop`, `Stop`
 - Hooks communicate via stdin (JSON input) and stdout (JSON output)

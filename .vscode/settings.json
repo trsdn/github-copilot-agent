@@ -6,8 +6,7 @@
     "*.prompt.md": "markdown",
     "*.instructions.md": "markdown",
     "SKILL.md": "markdown",
-    "AGENTS.md": "markdown",
-    "CLAUDE.md": "markdown"
+    "AGENTS.md": "markdown"
   },
   "files.exclude": {
     "**/.git": true,

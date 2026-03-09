@@ -28,7 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - feat: add hooks support — new `/copilot-new-hook` prompt template for lifecycle automation
 - feat: add agent plugins documentation across all skills
-- feat: add CLAUDE.md cross-tool compatibility support
 - feat: add `argument-hint`, `user-invocable`, `disable-model-invocation` fields to skill-builder
 - feat: add hooks section to setup-audit, compatibility-checker, and customization-selector skills
 

@@ -59,7 +59,6 @@ Check for correct directory structure:
 | `.github/copilot-instructions.md` | Workspace-wide coding guidelines | **High** |
 | `.github/instructions/*.instructions.md` | File-type specific rules | Medium |
 | `AGENTS.md` (root) | Multi-agent workspace instructions | Optional |
-| `CLAUDE.md` (root, `.claude/`, `~/.claude/`) | Cross-tool compatibility | Optional |
 
 #### Instruction Quality Checks
 
@@ -85,8 +84,8 @@ Check for correct directory structure:
 
 #### Agent File Checks
 
-- [ ] All agents have `.agent.md` extension (or `.md` in `.claude/agents/`)
-- [ ] Agents are in `.github/agents/` directory (or `.claude/agents/` for Claude format)
+- [ ] All agents have `.agent.md` extension
+- [ ] Agents are in `.github/agents/` directory
 - [ ] YAML frontmatter is valid
 - [ ] `description` is present and descriptive
 - [ ] `name` is set (recommended)
@@ -189,9 +188,6 @@ Consider creating skills for:
 | Location | Scope |
 |----------|-------|
 | `.github/hooks/*.json` | Workspace (shared with team) |
-| `.claude/settings.json` | Workspace (Claude compatibility) |
-| `.claude/settings.local.json` | Local only (not committed) |
-| `~/.claude/settings.json` | User (all workspaces) |
 | Agent frontmatter `hooks:` | Agent-scoped (preview) |
 
 ### 7. Settings Configuration
@@ -218,7 +214,6 @@ Check for recommended settings:
   "chat.useNestedAgentsMdFiles": true,
   "chat.customAgentInSubagent.enabled": true,
   "chat.useCustomAgentHooks": true,
-  "chat.useClaudeMdFile": true,
   "chat.plugins.enabled": true,
   "chat.autopilot.enabled": true,
   "chat.mcp.discovery.enabled": true
@@ -240,8 +235,6 @@ Check for recommended settings:
 |------------|------------|
 | `.github/chatmodes/*.chatmode.md` | `.github/agents/*.agent.md` |
 | `*.instructions.md` at repo root | `.github/instructions/*.instructions.md` |
-| `.claude/skills/` | `.github/skills/` (recommended) |
-| `~/.claude/skills/` | `~/.copilot/skills/` (recommended) |
 
 #### Deprecated Settings
 

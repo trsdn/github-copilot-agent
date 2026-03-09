@@ -195,10 +195,6 @@ For **multi-agent** workspaces, consider:
 
 - `AGENTS.md` at the workspace root (enable with `chat.useAgentsMdFile` setting)
 
-For **cross-tool compatibility** with Claude Code:
-
-- `CLAUDE.md` at the workspace root (enable with `chat.useClaudeMdFile` setting)
-
 ## Keeping your repositories in sync
 
 Once you've integrated this blueprint into your projects, you can keep them updated using one of these strategies:

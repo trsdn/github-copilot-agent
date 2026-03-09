@@ -24,8 +24,6 @@ VS Code supports multiple types of instructions files:
 | `.github/copilot-instructions.md` | Workspace root | All chat requests |
 | `*.instructions.md` | `.github/instructions/` or user profile | File-pattern scoped via `applyTo` |
 | `AGENTS.md` | Workspace root (or subfolders with experimental setting) | All agents in workspace |
-| `CLAUDE.md` | Workspace root, `.claude/`, or `~/.claude/` | Cross-tool compatibility |
-
 ## Requirements
 
 1. Create the file at the appropriate location:
@@ -56,12 +54,6 @@ If working with multiple AI agents, consider using `AGENTS.md` at the workspace 
 - Applies to all chat requests in workspace
 - Experimental: Enable `chat.useNestedAgentsMdFiles` for subfolder-specific instructions
 
-## CLAUDE.md (cross-tool compatibility)
-
-For cross-tool compatibility with Claude Code:
-- `CLAUDE.md` at workspace root, `.claude/CLAUDE.md`, or `~/.claude/CLAUDE.md`
-- Enable with `chat.useClaudeMdFile` setting
-- VS Code also detects `.claude/rules` folder for instructions files
 
 When done, explain:
 - How this file interacts with `.github/copilot-instructions.md`

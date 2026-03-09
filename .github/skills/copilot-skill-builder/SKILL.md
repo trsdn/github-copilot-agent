@@ -22,10 +22,6 @@ Agent Skills are folders containing a `SKILL.md` file plus optional scripts, exa
 |------|----------|----------|
 | Project skills | `.github/skills/<skill-name>/` | Shared with the repository |
 | Personal skills | `~/.copilot/skills/<skill-name>/` | Private to your machine |
-| Alt project | `.claude/skills/<skill-name>/` | Cross-tool compatibility |
-| Alt project | `.agents/skills/<skill-name>/` | Cross-tool compatibility |
-| Alt personal | `~/.claude/skills/<skill-name>/` | Cross-tool compatibility |
-| Alt personal | `~/.agents/skills/<skill-name>/` | Cross-tool compatibility |
 
 ## SKILL.md file format
 

@@ -100,7 +100,7 @@ When diagnosing issues, consult these sources for the latest information:
 | Agent Skills | `chat.useAgentSkills` | 1.108 | Stable |
 | Project skills (`.github/skills/`) | `chat.useAgentSkills` | 1.108 | Stable |
 | Personal skills (`~/.copilot/skills/`) | `chat.useAgentSkills` | 1.108 | Stable |
-| Alt skill locations (`.claude/skills/`, `.agents/skills/`) | `chat.useAgentSkills` | 1.108 | Stable |
+| Alt skill locations (`.agents/skills/`) | `chat.useAgentSkills` | 1.108 | Stable |
 | Custom skill locations | `chat.agentSkillsLocations` | 1.108 | Stable |
 
 ### Hooks (Lifecycle Automation)
@@ -109,7 +109,6 @@ When diagnosing issues, consult these sources for the latest information:
 |---------|---------|---------------|--------|
 | Workspace hooks (`.github/hooks/`) | `chat.hookFilesLocations` | Preview | **Preview** |
 | Agent-scoped hooks (frontmatter) | `chat.useCustomAgentHooks` | Preview | **Preview** |
-| Claude-compatible hooks (`.claude/settings.json`) | `chat.hookFilesLocations` | Preview | **Preview** |
 
 ### Agent Plugins
 
@@ -118,14 +117,6 @@ When diagnosing issues, consult these sources for the latest information:
 | Agent plugins | `chat.plugins.enabled` | Preview | **Preview** |
 | Plugin marketplaces | `chat.plugins.marketplaces` | Preview | **Preview** |
 | Local plugins | `chat.plugins.paths` | Preview | **Preview** |
-
-### CLAUDE.md / Claude Compatibility
-
-| Feature | Setting | Since Version | Status |
-|---------|---------|---------------|--------|
-| `CLAUDE.md` instructions | `chat.useClaudeMdFile` | Stable | Stable |
-| `.claude/agents/` format | Auto-discovered | Stable | Stable |
-| `.claude/rules/` instructions | `chat.instructionsFilesLocations` | Stable | Stable |
 
 ### Prompt Files
 
@@ -182,7 +173,6 @@ Check if the required files exist in the correct locations:
 | Agent Skills | `.github/skills/*/SKILL.md` |
 | Hook configs | `.github/hooks/*.json` |
 | AGENTS.md | Root or subfolders |
-| CLAUDE.md | Root, `.claude/`, or `~/.claude/` |
 
 ## Common Issues
 
@@ -238,7 +228,6 @@ Enable all experimental features:
   "chat.customAgentInSubagent.enabled": true,
   "chat.mcp.enabled": true,
   "chat.useCustomAgentHooks": true,
-  "chat.useClaudeMdFile": true,
   "chat.plugins.enabled": true,
   "chat.autopilot.enabled": true,
   "chat.mcp.discovery.enabled": true,
