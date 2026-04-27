@@ -1,0 +1,22 @@
+{
+  // Tool sets group built-in tools, MCP tools, and extension tools under one name.
+  // Create an active tool-set file with Chat: Configure Tool Sets.
+  "reader": {
+    "tools": [
+      "search/changes",
+      "search/codebase",
+      "read/problems",
+      "search/usages"
+    ],
+    "description": "Read-only tools for gathering project context",
+    "icon": "book"
+  },
+  "github-mcp": {
+    "tools": [
+      "github/list_issues",
+      "github/list_pull_requests"
+    ],
+    "description": "Selected GitHub MCP tools",
+    "icon": "github"
+  }
+}

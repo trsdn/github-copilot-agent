@@ -1,0 +1,13 @@
+{
+  "$schema": "https://aka.ms/vscode-chat-hooks-schema",
+  "_comment": "Example PreToolUse hook. Adapt and rename before enabling. The script must exist and be executable.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "./.github/hooks/scripts/check-dangerous.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}

@@ -18,6 +18,9 @@ It gives you a small set of reusable prompt templates and a purpose-built custom
 - **Scoped instruction files** (`*.instructions.md`) that apply to a file glob
 - **Agent Skills** (`.github/skills/<name>/SKILL.md`) for portable, specialized capabilities
 - **Hooks** (`.github/hooks/*.json`) for lifecycle automation
+- **MCP server configuration** (`.vscode/mcp.json`, agent `mcp-servers`, plugin `.mcp.json`) for external tools and data
+- **Agent plugins** (`plugin.json`) for packaging prompts, skills, agents, hooks, and MCP servers
+- **Tool sets** for grouping built-in, MCP, and extension tools into reusable capability bundles
 
 The intent is to keep everything **in-repo**, versioned, reviewable, and easy to reuse across projects.
 
@@ -37,6 +40,8 @@ The intent is to keep everything **in-repo**, versioned, reviewable, and easy to
     - [Custom agent](#custom-agent)
     - [Prompt templates (invoked via `/...`)](#prompt-templates-invoked-via-)
     - [Agent Skills](#agent-skills)
+    - [Hooks](#hooks)
+    - [MCP, plugins, and tool sets](#mcp-plugins-and-tool-sets)
   - [Quickstart: use Copilot to generate Copilot customizations](#quickstart-use-copilot-to-generate-copilot-customizations)
     - [Typical workflow](#typical-workflow)
   - [Where to put things (repo conventions)](#where-to-put-things-repo-conventions)
@@ -138,6 +143,10 @@ See [Keeping your repositories in sync](#keeping-your-repositories-in-sync) for 
   - Creates a new Agent Skill in `.github/skills/<name>/SKILL.md`
 - `.github/prompts/copilot-new-hook.prompt.md`
   - Creates a new hook configuration in `.github/hooks/<name>.json`
+- `.github/prompts/copilot-new-mcp.prompt.md`
+  - Creates or updates MCP server configuration for VS Code, GitHub Copilot agents, or plugins
+- `.github/prompts/copilot-new-plugin.prompt.md`
+  - Scaffolds an agent plugin bundle for packaging customizations
 
 ### Agent Skills
 
@@ -154,6 +163,25 @@ See [Keeping your repositories in sync](#keeping-your-repositories-in-sync) for 
   - Help decide which customization type to use
   - Decision matrix comparing instructions, prompts, agents, skills, hooks, and plugins
 
+### Hooks
+
+- `.github/hooks/example-block-dangerous.json.example`
+  - Inert example `PreToolUse` hook that warns on destructive shell patterns
+  - Companion script in `.github/hooks/scripts/check-dangerous.sh`
+  - Copy to `.github/hooks/<name>.json` and adapt before relying on it
+
+### MCP, plugins, and tool sets
+
+- `.vscode/mcp.example.json`
+  - Inert MCP configuration example for local and remote servers
+  - Copy to `.vscode/mcp.json` only when you want to enable a workspace MCP server
+- `.github/plugin/plugin.example.json`
+  - Inert agent plugin manifest example
+  - Use as a starting point when packaging customizations for plugin distribution
+- `.github/toolsets/toolsets.example.jsonc`
+  - Inert tool-set example for grouping built-in, MCP, and extension tools
+  - Create an active tool-set file via **Chat: Configure Tool Sets**
+
 ## Quickstart: use Copilot to generate Copilot customizations
 
 1. Open this repository in **VS Code**.
@@ -165,6 +193,8 @@ See [Keeping your repositories in sync](#keeping-your-repositories-in-sync) for 
    - `/copilot-new-instructions`
    - `/copilot-new-skill`
    - `/copilot-new-hook` - create a hook configuration
+  - `/copilot-new-mcp` - create MCP server configuration guidance
+  - `/copilot-new-plugin` - scaffold an agent plugin bundle
    - `/copilot-check-compatibility` - diagnose feature issues
    - `/copilot-audit-setup` - audit repo setup and get recommendations
 
@@ -184,6 +214,9 @@ Copilot Chat will ask you for the required `${input:...}` values (slug, display 
 - Scoped instructions: `.github/instructions/<slug>.instructions.md` (YAML frontmatter includes `applyTo: '<glob>'`)
 - Agent Skills: `.github/skills/<name>/SKILL.md` (plus optional scripts/examples in the skill directory)
 - Hook configs: `.github/hooks/<name>.json` (lifecycle automation)
+- MCP config: `.vscode/mcp.json` for VS Code workspaces, `mcp-servers` in `target: github-copilot` agents, `.mcp.json` for plugins
+- Plugin manifests: `plugin.json` in plugin roots (or recognized format-specific locations such as `.github/plugin/plugin.json`)
+- Tool sets: create with **Chat: Configure Tool Sets**; keep examples inert unless the team agrees to enable them
 
 If you also want **workspace-wide** instructions, add:
 
@@ -191,9 +224,15 @@ If you also want **workspace-wide** instructions, add:
 
 …and keep `*.instructions.md` for file-type-specific rules.
 
-For **multi-agent** workspaces, consider:
+For **multi-agent** workspaces, the following always-on instruction files are also recognized:
 
-- `AGENTS.md` at the workspace root (enable with `chat.useAgentsMdFile` setting)
+- `AGENTS.md` at the workspace root (`chat.useAgentsMdFile`, optional nested via `chat.useNestedAgentsMdFiles`)
+- `CLAUDE.md` at root, in `.claude/`, or in `~/.claude/` (`chat.useClaudeMdFile`)
+
+For **monorepos** opened in a subfolder, enable `chat.useCustomizationsInParentRepositories` so VS Code discovers customizations defined at the repository root.
+
+For **organization or enterprise** reuse, keep repo-level files as the local override layer. Organization-level instructions
+and custom agents provide shared defaults, while repository-level files take precedence for project-specific behavior.
 
 ## Keeping your repositories in sync
 
@@ -234,9 +273,14 @@ jobs:
           
       - name: Sync customizations
         run: |
+          mkdir -p .github/skills .github/agents .github/prompts .github/hooks .github/toolsets .github/plugin .vscode
           cp -r /tmp/blueprint/.github/skills/* .github/skills/ 2>/dev/null || true
           cp -r /tmp/blueprint/.github/agents/* .github/agents/ 2>/dev/null || true
           cp -r /tmp/blueprint/.github/prompts/* .github/prompts/ 2>/dev/null || true
+          cp -r /tmp/blueprint/.github/hooks/* .github/hooks/ 2>/dev/null || true
+          cp -r /tmp/blueprint/.github/toolsets/* .github/toolsets/ 2>/dev/null || true
+          cp -r /tmp/blueprint/.github/plugin/* .github/plugin/ 2>/dev/null || true
+          cp /tmp/blueprint/.vscode/mcp.example.json .vscode/mcp.example.json 2>/dev/null || true
           
       - name: Create PR if changes
         uses: peter-evans/create-pull-request@v5

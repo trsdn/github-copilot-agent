@@ -43,16 +43,16 @@ What do you want to achieve?
 
 ## Decision Matrix
 
-| Feature | Instructions | Prompt Files | Custom Agents | Agent Skills | Hooks |
-|---------|--------------|--------------|---------------|--------------|-------|
-| **File Extension** | `.instructions.md` | `.prompt.md` | `.agent.md` | `SKILL.md` | `.json` |
-| **Location** | `.github/instructions/` | `.github/prompts/` | `.github/agents/` | `.github/skills/<name>/` | `.github/hooks/` |
-| **Triggers** | Auto (always or via glob) | Manual (`/name`) | Manual (switch agent) | Auto (when relevant) | Lifecycle events |
-| **Can include scripts?** | ❌ No | ❌ No | ❌ No | ✅ Yes | ✅ Yes |
-| **Can specify tools?** | ❌ No | ✅ Yes | ✅ Yes | ❌ No | N/A |
-| **Can specify model?** | ❌ No | ✅ Yes | ✅ Yes | ❌ No | N/A |
-| **Portable across tools?** | ❌ VS Code only | ❌ VS Code only | Partial | ✅ Open standard | Partial |
-| **Status** | Stable | Stable | Stable (1.106+) | Stable | Preview |
+| Feature | Instructions | Prompt Files | Custom Agents | Agent Skills | Hooks | MCP | Plugins | Tool Sets |
+|---------|--------------|--------------|---------------|--------------|-------|-----|---------|-----------|
+| **File Extension** | `.instructions.md` | `.prompt.md` | `.agent.md` | `SKILL.md` | `.json` | `.json` / YAML frontmatter | `plugin.json` | `.jsonc` |
+| **Location** | `.github/instructions/` | `.github/prompts/` | `.github/agents/` | `.github/skills/<name>/` | `.github/hooks/` | `.vscode/mcp.json`, agent `mcp-servers`, plugin `.mcp.json` | plugin root | tool-set file via VS Code |
+| **Triggers** | Auto (always or via glob) | Manual (`/name`) | Manual (switch agent) | Auto (when relevant) | Lifecycle events | Tool/resource/prompt invocation | Install/enable plugin | Tool selection or `#toolset` |
+| **Can include scripts?** | No | No | No | Yes | Yes | Server-dependent | Yes | No |
+| **Can specify tools?** | No | Yes | Yes | No | N/A | Provides tools | Bundles tools via agents/MCP | Groups tools |
+| **Can specify model?** | No | Yes | Yes | No | N/A | No | Via bundled prompts/agents | No |
+| **Portable across tools?** | VS Code/GitHub | VS Code | Partial | Open standard | Partial | MCP standard | Cross-tool (preview) | VS Code |
+| **Status** | Stable | Stable | Stable (1.106+) | Stable | Preview | Stable/Preview features | Preview | Stable/Preview |
 
 ## Detailed Guidance
 
@@ -71,8 +71,9 @@ What do you want to achieve?
 | File | Location | Behavior |
 |------|----------|----------|
 | `copilot-instructions.md` | `.github/` | Applies to all requests |
-| `*.instructions.md` | `.github/instructions/` | Conditional via `applyTo` |
-| `AGENTS.md` | Root or subfolders | Multi-agent compatible |
+| `*.instructions.md` | `.github/instructions/` (or `.claude/rules/`, user profile) | Conditional via `applyTo` (`paths` for `.claude/rules`) |
+| `AGENTS.md` | Root or subfolders | Multi-agent compatible (`chat.useAgentsMdFile`) |
+| `CLAUDE.md` | Root, `.claude/`, or `~/.claude/` | Claude-compatible (`chat.useClaudeMdFile`) |
 
 **Example use cases:**
 
@@ -127,6 +128,8 @@ What do you want to achieve?
 - Set `user-invocable: false` for subagent-only agents
 - Set `disable-model-invocation: true` to prevent automatic invocation
 - Define agent-scoped `hooks` for lifecycle automation (preview)
+- Add `mcp-servers` for GitHub Copilot cloud agents when the agent needs private or task-specific external tools
+- Use `tools` to limit built-in tools, tool aliases, MCP tools (`server/tool`), or full MCP servers (`server/*`)
 
 **Example agents:**
 
@@ -153,6 +156,9 @@ What do you want to achieve?
 - Three-level loading: discovery → instructions → resources
 - Can include scripts, templates, and example files
 - Works across GitHub Copilot in VS Code, CLI, and coding agent
+- Recognized project locations: `.github/skills/`, `.claude/skills/`, `.agents/skills/`
+- Recognized user locations: `~/.copilot/skills/`, `~/.claude/skills/`, `~/.agents/skills/`
+- Customize via `chat.agentSkillsLocations`
 
 **Example skills:**
 
@@ -205,6 +211,70 @@ What do you want to achieve?
 - Discoverable via plugin marketplaces
 - Installed plugins appear alongside local customizations
 - Can add private repositories as custom marketplaces
+- Plugin MCP servers use top-level `mcpServers`
+- Plugin hooks run alongside workspace and user hooks; for `PreToolUse`, the most restrictive decision wins
+- Workspace recommendations can point teams to approved plugin marketplaces and enabled plugins
+
+---
+
+### Use MCP Servers when
+
+**Perfect for:**
+
+- Connecting agents to external APIs, databases, browsers, internal tools, or SaaS systems
+- Exposing tools, resources, prompts, or MCP Apps to Copilot
+- Reusing the same external tool integration across prompts, agents, and plugin bundles
+- Giving GitHub Copilot cloud agents access to repository-approved external tools
+
+**Key features:**
+
+- VS Code workspace config uses `.vscode/mcp.json` with top-level `servers`
+- GitHub Copilot custom agents use `mcp-servers` in `.agent.md` frontmatter
+- Agent plugins use `.mcp.json` or `plugin.json` with top-level `mcpServers`
+- Tools can be referenced as `<server>/<tool>` or `<server>/*`
+- Local stdio servers can use `sandboxEnabled: true` on macOS/Linux
+
+**Use MCP instead of a skill when:**
+
+- The agent needs live data or actions outside the repository
+- The integration must expose callable tools, not just instructions
+- Secrets or runtime configuration are required
+
+---
+
+### Use Tool Sets when
+
+**Perfect for:**
+
+- Grouping read-only research tools for planning and review workflows
+- Grouping selected MCP tools so users do not enable a full server by accident
+- Making repeated tool selections easier in prompts and custom agents
+- Staying under the practical tool limit by enabling only relevant tool groups
+
+**Key features:**
+
+- Tool sets can include built-in tools, MCP tools, and extension tools
+- Referenced in prompts with `#toolset-name`
+- Appear as collapsible groups in the tools picker
+- Useful alongside explicit `tools` lists in `.prompt.md` and `.agent.md` files
+
+---
+
+### Use Organization or Enterprise Customizations when
+
+**Perfect for:**
+
+- Shared defaults across many repositories
+- Governance rules that should not be copied manually into every repo
+- Organization-wide custom agents or instructions
+- Standard plugin marketplaces or approved tool policies
+
+**Key features:**
+
+- Organization instructions and custom agents can be discovered alongside local files when enabled by settings/admin policy
+- Repository-level agents with the same name override organization/enterprise-level agents
+- Enterprise or organization agents can live in a `.github-private` repository for GitHub Copilot cloud agent scenarios
+- Keep repository customizations focused on local project behavior and treat org/enterprise assets as the default layer
 
 ---
 
@@ -232,6 +302,14 @@ What do you want to achieve?
 │                        HOOKS                                │
 │  (deterministic lifecycle automation)                       │
 │    └── Runs at lifecycle events, enforces policies          │
+├─────────────────────────────────────────────────────────────┤
+│                     MCP SERVERS                             │
+│  (external tools, resources, prompts, and apps)             │
+│    └── Tools can be limited via agent/prompt/tool-set config│
+├─────────────────────────────────────────────────────────────┤
+│                 AGENT PLUGINS + TOOL SETS                  │
+│  (distribution + reusable tool grouping)                    │
+│    └── Plugins bundle primitives; tool sets group tools     │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -261,6 +339,13 @@ What do you want to achieve?
 └── hooks/
     ├── security.json            # Block dangerous commands
     └── formatting.json          # Auto-format after edits
+.vscode/
+└── mcp.example.json             # Inert MCP example; copy to mcp.json to enable
+.github/
+├── plugin/
+│   └── plugin.example.json      # Inert plugin manifest example
+└── toolsets/
+    └── toolsets.example.jsonc   # Inert tool-set example
 ```
 
 ## Common Combinations
@@ -283,6 +368,18 @@ What do you want to achieve?
 2. **Agent**: `security-reviewer.agent.md` for dedicated reviews
 3. **Prompt**: `/security-audit` for on-demand security checks
 
+### External Tool Integration
+
+1. **MCP**: `.vscode/mcp.json` or agent `mcp-servers` exposes a trusted external tool
+2. **Tool set**: Groups only the required MCP tools
+3. **Agent**: Restricts `tools` to `read`, `search`, and selected MCP tools
+
+### Packaged Team Workflow
+
+1. **Plugin**: Bundles agents, skills, prompts, hooks, and MCP servers
+2. **Organization setting**: Recommends the plugin marketplace or enabled plugin
+3. **Repository override**: Adds repo-specific instructions or agent variants
+
 ## Version Requirements
 
 | Feature | Minimum VS Code Version | Setting |
@@ -293,9 +390,16 @@ What do you want to achieve?
 | `AGENTS.md` | 1.102 | `chat.useAgentsMdFile` |
 | Custom agents (`.agent.md`) | 1.106 | Auto-discovered |
 | Nested `AGENTS.md` | 1.105 | `chat.useNestedAgentsMdFiles` (experimental) |
+| `CLAUDE.md` | 1.105+ | `chat.useClaudeMdFile` |
 | Agent Skills | 1.108 | `chat.useAgentSkills` |
+| Parent-repo discovery (monorepo) | 1.108+ | `chat.useCustomizationsInParentRepositories` |
+| MCP servers | 1.102+ | `chat.mcp.enabled` / `chat.mcp.access` |
+| MCP sandboxing | Preview | `sandboxEnabled` in `mcp.json` |
+| Tool sets | 1.108+ | Configure with `Chat: Configure Tool Sets` |
+| Organization instructions | 1.108+ | `github.copilot.chat.organizationInstructions.enabled` |
+| Organization custom agents | 1.107+ | `github.copilot.chat.organizationCustomAgents.enabled` |
 | Hooks | Preview | `chat.useCustomAgentHooks` (for agent-scoped) |
-| Agent plugins | Preview | N/A |
+| Agent plugins | Preview | `chat.plugins.enabled` |
 
 ## References
 
@@ -306,5 +410,7 @@ What do you want to achieve?
 - [Agent Skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
 - [Hooks](https://code.visualstudio.com/docs/copilot/customization/hooks)
 - [Agent Plugins](https://code.visualstudio.com/docs/copilot/customization/agent-plugins)
+- [MCP Servers](https://code.visualstudio.com/docs/copilot/customization/mcp-servers)
+- [Agent Tools and Tool Sets](https://code.visualstudio.com/docs/copilot/agents/agent-tools)
 - [Agent Skills Standard](https://agentskills.io/)
 - [Community Examples](https://github.com/github/awesome-copilot)

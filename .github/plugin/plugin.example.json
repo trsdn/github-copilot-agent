@@ -1,0 +1,12 @@
+{
+  "name": "example-copilot-plugin",
+  "description": "Example inert agent plugin manifest. Rename to plugin.json in a plugin root to enable.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Your Team"
+  },
+  "skills": "skills/",
+  "agents": "agents/",
+  "hooks": "hooks.json",
+  "mcpServers": ".mcp.json"
+}

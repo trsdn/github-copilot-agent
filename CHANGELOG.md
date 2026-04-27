@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [v0.5.0] - 2026-04-27
+
+## What's Changed
+
+### ✨ Features
+- feat: align customization blueprint with latest VS Code Copilot spec
+- feat: add inert MCP workspace example and `/copilot-new-mcp` prompt
+- feat: add inert agent plugin manifest and `/copilot-new-plugin` prompt
+- feat: add tool-set example for grouping built-in, MCP, and extension tools
+- feat: document organization and enterprise customization layering
+
+### 📚 Documentation
+- docs: update README, audit skill, selector skill, compatibility checker, and builder agent with MCP, plugins, tool sets, hooks, and current documentation links
+
 ## [v0.4.2] - 2026-03-09
 
 ## What's Changed

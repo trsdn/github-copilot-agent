@@ -14,9 +14,14 @@ Copilot agents, prompt files, instructions, skills, and hooks in any project.
 - Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
 - Agent files: `.agent.md` with YAML frontmatter (`description` required, `name` and `tools` recommended)
 - Prompt files: `.prompt.md` with YAML frontmatter (`description` recommended)
-- Skill files: `SKILL.md` in a named directory under `.github/skills/<name>/`
+- Skill files: `SKILL.md` in a named directory under `.github/skills/<name>/` (alt locations: `.claude/skills/`, `.agents/skills/`)
 - Hook configs: JSON files in `.github/hooks/` defining lifecycle automation
+- MCP configs: `.vscode/mcp.json` for VS Code workspace MCP, `mcp-servers` in GitHub Copilot agent frontmatter, `.mcp.json` in plugins
+- Agent plugin manifests: `plugin.json` in plugin roots; keep example manifests inert as `*.example.json`
+- Tool sets group built-in, MCP, and extension tools; keep examples inert unless deliberately enabled via VS Code
 - Use `user-invocable` and `disable-model-invocation` instead of the deprecated `infer` field
+- For multi-agent workspaces, `AGENTS.md` (root or experimental nested) and `CLAUDE.md` are also recognized as always-on instructions
+- For monorepos opened in a subfolder, enable `chat.useCustomizationsInParentRepositories` to discover customizations from the repo root
 
 ## File Structure
 

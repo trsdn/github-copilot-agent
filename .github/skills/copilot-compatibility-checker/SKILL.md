@@ -41,6 +41,7 @@ When diagnosing issues, consult these sources for the latest information:
 - [Hooks](https://code.visualstudio.com/docs/copilot/customization/hooks)
 - [Agent Plugins](https://code.visualstudio.com/docs/copilot/customization/agent-plugins)
 - [MCP Servers](https://code.visualstudio.com/docs/copilot/customization/mcp-servers)
+- [MCP Configuration Reference](https://code.visualstudio.com/docs/copilot/reference/mcp-configuration)
 - [Language Models](https://code.visualstudio.com/docs/copilot/customization/language-models)
 
 ### Agents Documentation
@@ -51,7 +52,8 @@ When diagnosing issues, consult these sources for the latest information:
 
 ### Chat & Tools Documentation
 
-- [Chat Tools](https://code.visualstudio.com/docs/copilot/chat/chat-tools)
+- [Agent Tools](https://code.visualstudio.com/docs/copilot/agents/agent-tools)
+- [Tools Concepts](https://code.visualstudio.com/docs/copilot/concepts/tools)
 - [Chat Sessions](https://code.visualstudio.com/docs/copilot/chat/chat-sessions)
 - [Copilot Chat Context](https://code.visualstudio.com/docs/copilot/chat/copilot-chat-context)
 
@@ -65,6 +67,7 @@ When diagnosing issues, consult these sources for the latest information:
 
 - [GitHub Copilot Docs](https://docs.github.com/en/copilot)
 - [Custom Agents (GitHub)](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/create-custom-agents)
+- [Custom Agents Configuration (GitHub)](https://docs.github.com/en/copilot/reference/custom-agents-configuration)
 - [Coding Agent](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent)
 
 ### Community Resources
@@ -83,6 +86,8 @@ When diagnosing issues, consult these sources for the latest information:
 | `*.instructions.md` files | Auto-discovered in `.github/instructions/` | 1.99 | Stable |
 | `AGENTS.md` (root) | `chat.useAgentsMdFile` | 1.102 | Stable |
 | `AGENTS.md` (nested/subfolders) | `chat.useNestedAgentsMdFiles` | 1.105 | **Experimental** |
+| `CLAUDE.md` | `chat.useClaudeMdFile` | 1.105+ | Stable/compatible |
+| Parent repository discovery | `chat.useCustomizationsInParentRepositories` | 1.108+ | Stable |
 
 ### Custom Agents
 
@@ -91,7 +96,7 @@ When diagnosing issues, consult these sources for the latest information:
 | Custom agents (`.agent.md`) | Auto-discovered | 1.106 | Stable |
 | Legacy chat modes (`.chatmode.md`) | Auto-discovered (deprecated) | 1.99-1.105 | Deprecated |
 | Subagents with custom agents | `chat.customAgentInSubagent.enabled` | 1.106 | **Experimental** |
-| Organization/Enterprise agents | `github.copilot.chat.customAgents.showOrganizationAndEnterpriseAgents` | 1.107 | **Experimental** |
+| Organization custom agents | `github.copilot.chat.organizationCustomAgents.enabled` | 1.107+ | Stable/Policy controlled |
 
 ### Agent Skills
 
@@ -116,7 +121,7 @@ When diagnosing issues, consult these sources for the latest information:
 |---------|---------|---------------|--------|
 | Agent plugins | `chat.plugins.enabled` | Preview | **Preview** |
 | Plugin marketplaces | `chat.plugins.marketplaces` | Preview | **Preview** |
-| Local plugins | `chat.plugins.paths` | Preview | **Preview** |
+| Local plugins | `chat.pluginLocations` | Preview | **Preview** |
 
 ### Prompt Files
 
@@ -132,8 +137,11 @@ When diagnosing issues, consult these sources for the latest information:
 | Terminal tool auto-approval | `chat.tools.autoApprove` | 1.103 | Stable |
 | Terminal sandboxing | `chat.tools.terminal.sandbox.enabled` | Preview | **Preview** |
 | MCP servers | `chat.mcp.enabled` | 1.102 | Stable |
+| MCP access control | `chat.mcp.access` | 1.108+ | Stable/Policy controlled |
 | MCP sandbox | `sandboxEnabled` in `mcp.json` | Preview | **Preview** |
 | MCP auto-discovery | `chat.mcp.discovery.enabled` | Preview | **Preview** |
+| Tool sets | `Chat: Configure Tool Sets` | 1.108+ | Stable/Preview |
+| Organization instructions | `github.copilot.chat.organizationInstructions.enabled` | 1.108+ | Stable/Policy controlled |
 | Background agents | `chat.agent.background.enabled` | 1.107 | **Experimental** |
 | Autopilot mode | `chat.autopilot.enabled` | Preview | **Preview** |
 
@@ -231,7 +239,7 @@ Enable all experimental features:
   "chat.plugins.enabled": true,
   "chat.autopilot.enabled": true,
   "chat.mcp.discovery.enabled": true,
-  "github.copilot.chat.customAgents.showOrganizationAndEnterpriseAgents": true
+  "github.copilot.chat.organizationCustomAgents.enabled": true
 }
 ```
 
