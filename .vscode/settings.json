@@ -34,7 +34,6 @@
   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "chat.useAgentsMdFile": true,
   "chat.useAgentSkills": true,
-  "chat.mcp.enabled": true,
   "chat.experimental.agentTools.enabled": true,
   "search.exclude": {
     "**/node_modules": true,
