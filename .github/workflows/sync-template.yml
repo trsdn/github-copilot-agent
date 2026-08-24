@@ -26,12 +26,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout blueprint
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: blueprint
 
       - name: Checkout template
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: trsdn/github-copilot-agent-template
           token: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
